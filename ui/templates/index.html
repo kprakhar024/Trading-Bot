@@ -1,0 +1,327 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <!-- Account Overview -->
+    <div class="section">
+        <h2 class="section-title">
+            <i class="fas fa-wallet"></i>
+            Account Overview
+        </h2>
+        <div class="grid grid-3">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-coins text-primary"></i>
+                    Total Balance
+                </div>
+                <div class="card-body">
+                    <div class="stat-value" id="totalBalance">--</div>
+                    <div class="stat-label">USDT</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-check-circle text-success"></i>
+                    Available Balance
+                </div>
+                <div class="card-body">
+                    <div class="stat-value" id="availableBalance">--</div>
+                    <div class="stat-label">USDT</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line text-warning"></i>
+                    Unrealized PnL
+                </div>
+                <div class="card-body">
+                    <div class="stat-value" id="unrealizedPnL">--</div>
+                    <div class="stat-label">USDT</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trading Panel -->
+    <div class="section">
+        <h2 class="section-title">
+            <i class="fas fa-exchange-alt"></i>
+            Place Order
+        </h2>
+        <div class="card">
+            <div class="card-body">
+                <div class="trading-panel">
+                    <!-- Order Type Tabs -->
+                    <div class="tabs">
+                        <button class="tab active" data-tab="market">Market</button>
+                        <button class="tab" data-tab="limit">Limit</button>
+                        <button class="tab" data-tab="stop-market">Stop Market</button>
+                        <button class="tab" data-tab="stop-limit">Stop Limit</button>
+                    </div>
+
+                    <!-- Market Order Form -->
+                    <div id="marketForm" class="tab-content active">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Symbol</label>
+                                <input type="text" id="marketSymbol" class="form-control" value="BTCUSDT" placeholder="BTCUSDT">
+                            </div>
+                            <div class="form-group">
+                                <label>Current Price</label>
+                                <div class="price-display" id="currentPrice">--</div>
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="marketQuantity" class="form-control" step="0.001" placeholder="0.001">
+                            </div>
+                            <div class="form-group">
+                                <label>Side</label>
+                                <div class="btn-group">
+                                    <button class="btn btn-success btn-side active" data-side="BUY">
+                                        <i class="fas fa-arrow-up"></i> Buy
+                                    </button>
+                                    <button class="btn btn-danger btn-side" data-side="SELL">
+                                        <i class="fas fa-arrow-down"></i> Sell
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox">
+                                <input type="checkbox" id="marketReduceOnly">
+                                <span>Reduce Only</span>
+                            </label>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="placeMarketOrder()">
+                            <i class="fas fa-paper-plane"></i>
+                            Place Market Order
+                        </button>
+                    </div>
+
+                    <!-- Limit Order Form -->
+                    <div id="limitForm" class="tab-content">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Symbol</label>
+                                <input type="text" id="limitSymbol" class="form-control" value="BTCUSDT" placeholder="BTCUSDT">
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="limitQuantity" class="form-control" step="0.001" placeholder="0.001">
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Price</label>
+                                <input type="number" id="limitPrice" class="form-control" step="0.01" placeholder="50000">
+                            </div>
+                            <div class="form-group">
+                                <label>Time in Force</label>
+                                <select id="limitTIF" class="form-control">
+                                    <option value="GTC">GTC - Good Till Cancel</option>
+                                    <option value="IOC">IOC - Immediate or Cancel</option>
+                                    <option value="FOK">FOK - Fill or Kill</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Side</label>
+                            <div class="btn-group">
+                                <button class="btn btn-success btn-side active" data-side="BUY">
+                                    <i class="fas fa-arrow-up"></i> Buy
+                                </button>
+                                <button class="btn btn-danger btn-side" data-side="SELL">
+                                    <i class="fas fa-arrow-down"></i> Sell
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="placeLimitOrder()">
+                            <i class="fas fa-paper-plane"></i>
+                            Place Limit Order
+                        </button>
+                    </div>
+
+                    <!-- Stop Market Order Form -->
+                    <div id="stop-marketForm" class="tab-content">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Symbol</label>
+                                <input type="text" id="stopMarketSymbol" class="form-control" value="BTCUSDT" placeholder="BTCUSDT">
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="stopMarketQuantity" class="form-control" step="0.001" placeholder="0.001">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Stop Price</label>
+                            <input type="number" id="stopMarketStopPrice" class="form-control" step="0.01" placeholder="45000">
+                        </div>
+                        <div class="form-group">
+                            <label>Side</label>
+                            <div class="btn-group">
+                                <button class="btn btn-success btn-side active" data-side="BUY">
+                                    <i class="fas fa-arrow-up"></i> Buy
+                                </button>
+                                <button class="btn btn-danger btn-side" data-side="SELL">
+                                    <i class="fas fa-arrow-down"></i> Sell
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox">
+                                <input type="checkbox" id="stopMarketReduceOnly">
+                                <span>Reduce Only</span>
+                            </label>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="placeStopMarketOrder()">
+                            <i class="fas fa-paper-plane"></i>
+                            Place Stop Market Order
+                        </button>
+                    </div>
+
+                    <!-- Stop Limit Order Form -->
+                    <div id="stop-limitForm" class="tab-content">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Symbol</label>
+                                <input type="text" id="stopLimitSymbol" class="form-control" value="BTCUSDT" placeholder="BTCUSDT">
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="stopLimitQuantity" class="form-control" step="0.001" placeholder="0.001">
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Price</label>
+                                <input type="number" id="stopLimitPrice" class="form-control" step="0.01" placeholder="44500">
+                            </div>
+                            <div class="form-group">
+                                <label>Stop Price</label>
+                                <input type="number" id="stopLimitStopPrice" class="form-control" step="0.01" placeholder="45000">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Side</label>
+                            <div class="btn-group">
+                                <button class="btn btn-success btn-side active" data-side="BUY">
+                                    <i class="fas fa-arrow-up"></i> Buy
+                                </button>
+                                <button class="btn btn-danger btn-side" data-side="SELL">
+                                    <i class="fas fa-arrow-down"></i> Sell
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="placeStopLimitOrder()">
+                            <i class="fas fa-paper-plane"></i>
+                            Place Stop Limit Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Positions & Orders -->
+    <div class="grid grid-2">
+        <!-- Open Positions -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-briefcase"></i>
+                Open Positions
+                <button class="btn btn-sm btn-secondary" onclick="loadPositions()">
+                    <i class="fas fa-sync"></i>
+                </button>
+            </h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table" id="positionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Size</th>
+                                    <th>Entry</th>
+                                    <th>Mark</th>
+                                    <th>PnL</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="positionsBody">
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No open positions</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Open Orders -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-list"></i>
+                Open Orders
+                <button class="btn btn-sm btn-secondary" onclick="loadOrders()">
+                    <i class="fas fa-sync"></i>
+                </button>
+            </h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table" id="ordersTable">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Type</th>
+                                    <th>Side</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersBody">
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No open orders</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leverage Setting -->
+    <div class="section">
+        <h2 class="section-title">
+            <i class="fas fa-sliders-h"></i>
+            Leverage Settings
+        </h2>
+        <div class="card">
+            <div class="card-body">
+                <div class="form-grid" style="max-width: 600px;">
+                    <div class="form-group">
+                        <label>Symbol</label>
+                        <input type="text" id="leverageSymbol" class="form-control" value="BTCUSDT" placeholder="BTCUSDT">
+                    </div>
+                    <div class="form-group">
+                        <label>Leverage (1-125x)</label>
+                        <input type="number" id="leverageValue" class="form-control" min="1" max="125" value="10">
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button class="btn btn-primary" onclick="setLeverage()">
+                            <i class="fas fa-cog"></i>
+                            Set Leverage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
