@@ -1,5 +1,4 @@
-## 📄 `README.md` (Shorter Version)
-# 🤖 Binance Futures Trading Bot
+🤖 Binance Futures Trading Bot
 
 A professional trading bot for Binance Futures Testnet with Web UI and CLI support.
 ## ✨ Features
@@ -18,7 +17,7 @@ A professional trading bot for Binance Futures Testnet with Web UI and CLI suppo
 
 ### 1. Installation
 
-```bash
+
 # Clone repository
 git clone https://github.com/yourusername/binance-trading-bot.git
 cd binance-trading-bot
@@ -30,7 +29,7 @@ source venv/bin/activate  # macOS/Linux
 
 # Install dependencies
 pip install -r requirements.txt
-```
+
 
 ### 2. Get API Keys
 
@@ -39,24 +38,24 @@ pip install -r requirements.txt
 3. Copy `.env.example` to `.env`
 4. Add your credentials to `.env`
 
-```env
+env
 BINANCE_API_KEY=your_testnet_api_key_here
 BINANCE_API_SECRET=your_testnet_api_secret_here
 TESTNET=True
-```
+
 
 ### 3. Run the Bot
 
 **Web UI:**
-```bash
+
 python run_ui.py
 # Open browser to http://localhost:5000
-```
+
 
 **CLI:**
-```bash
+
 python main.py balance
-```
+
 
 ---
 
@@ -64,9 +63,7 @@ python main.py balance
 
 ### Web Interface
 
-```bash
 python run_ui.py
-```
 
 Features:
 - Real-time account overview
@@ -79,7 +76,6 @@ Features:
 
 #### Basic Commands
 
-```bash
 # Check balance
 python main.py balance
 
@@ -91,11 +87,11 @@ python main.py positions
 
 # Set leverage
 python main.py set-leverage BTCUSDT 10
-```
+
 
 #### Trading
 
-```bash
+
 # Market order
 python main.py market BTCUSDT BUY 0.001
 
@@ -107,11 +103,10 @@ python main.py stop-market BTCUSDT SELL 0.001 45000 --reduce-only
 
 # Stop limit order
 python main.py stop-limit BTCUSDT SELL 0.001 44500 45000
-```
 
 #### Order Management
 
-```bash
+
 # View open orders
 python main.py orders
 
@@ -143,7 +138,7 @@ binance-trading-bot/
 ├── run_ui.py              # Web UI launcher
 ├── requirements.txt       # Dependencies
 └── .env                   # Configuration (create from .env.example)
-```
+
 
 ---
 
@@ -151,7 +146,7 @@ binance-trading-bot/
 
 ### Example 1: Quick Trade
 
-```bash
+
 # Set leverage
 python main.py set-leverage BTCUSDT 5
 
@@ -163,11 +158,11 @@ python main.py positions
 
 # Close position
 python main.py close BTCUSDT
-```
+
 
 ### Example 2: Programmatic Usage
 
-```python
+python
 from src.bot import BinanceFuturesBot
 import os
 from dotenv import load_dotenv
@@ -191,7 +186,7 @@ print(f"Order ID: {order['orderId']}")
 
 # Close position
 bot.close_position('BTCUSDT')
-```
+
 
 ---
 
@@ -200,30 +195,29 @@ bot.close_position('BTCUSDT')
 ### Common Issues
 
 **"API credentials not found"**
-```bash
+
 # Create .env file from example
 cp .env.example .env
 # Add your API keys
-```
+
 
 **"Module not found"**
-```bash
+
 pip install -r requirements.txt
-```
+
 
 **"Port 5000 already in use"**
-```python
+python
 # In run_ui.py, change port:
 socketio.run(app, debug=True, host='0.0.0.0', port=5001)
-```
+
 
 **Orders not executing**
-```bash
+
 # Check balance
 python main.py balance
 
 # Verify minimum quantity (BTC: 0.001, ETH: 0.01)
-```
 
 ---
 
